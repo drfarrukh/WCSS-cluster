@@ -1,19 +1,17 @@
 #!/bin/bash
 #SBATCH -N 1
-#SBATCH --partition=short
+#SBATCH -c 8
+#SBATCH --mem=8gb
 #SBATCH --time=00:30:00
-#SBATCH --error=%j.err_
-#SBATCH --output=%J.out_
-#SBATCH --cpus-per-task=32     # specify the number of CPU cores
-#SBATCH --mem=64G     # specify memory per CPU
+#SBATCH --job-name=Classification
+#SBATCH --error=Outputs/%j.err_
+#SBATCH --output=Outputs/%J.out_
+#SBATCH -p tesla
+#SBATCH -q tesla
+#SBATCH -A kdm-grant594
+#SBATCH --gres=gpu:tesla:1
 
+apptainer exec --nv tensorflow_latest-gpu.sif pip3 install -q kaggle --user
+apptainer exec --nv tensorflow_latest-gpu.sif pip3 install -q matplotlib seaborn scikit-learn imbalanced-learn --user
 
-source /etc/profile.d/modules.sh
-
-module load Python
-
-pip3 install -q kaggle
-pip3 install -q pandas matplotlib seaborn scikit-learn imbalanced-learn
-
-
-python3
+apptainer exec --nv tensorflow_latest-gpu.sif python3 classification.py

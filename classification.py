@@ -269,7 +269,7 @@ val_loss = history.history['val_loss']
 
 epochs_range = range(epochs)
 
-plt.figure(figsize=(8, 8))
+plt.figure(figsize=(12, 6))
 plt.subplot(1, 2, 1)
 plt.plot(epochs_range, acc, label='Training Accuracy')
 plt.plot(epochs_range, val_acc, label='Validation Accuracy')
@@ -283,7 +283,7 @@ plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
 plt.show()
 
-plt.savefig('output_plots/Performance_bare.png')
+plt.savefig('Output_plots/Performance_bare.png')
 
 
 """The plots show that training accuracy and validation accuracy are off by large margins, and the model has achieved only around 60% accuracy on the validation set.
@@ -380,7 +380,7 @@ val_loss = history.history['val_loss']
 
 epochs_range = range(epochs)
 
-plt.figure(figsize=(8, 8))
+plt.figure(figsize=(12, 6))
 plt.subplot(1, 2, 1)
 plt.plot(epochs_range, acc, label='Training Accuracy')
 plt.plot(epochs_range, val_acc, label='Validation Accuracy')
@@ -394,7 +394,7 @@ plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
 plt.show()
 
-plt.savefig('output_plots/Performance_after_augmentation.png')
+plt.savefig('Output_plots/Performance_after_augmentation.png')
 
 """## Predict on new data
 
