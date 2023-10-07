@@ -427,47 +427,12 @@ model1.summary()
 
 # %%
 # Train the model
-history1 = model1.fit(X_train, y_train, epochs=10, batch_size=128, validation_split=0.2, verbose=2)
+history1 = model1.fit(X_train, y_train, epochs=30, batch_size=128, validation_split=0.2, verbose=2)
 
 # Evaluate the model
 test_loss, test_acc = model1.evaluate(X_test, y_test, verbose=2)
 print(f"Test accuracy: {test_acc * 100:.2f}%")
 
 # %%
-
-
-# %%
-import tensorflow as tf
-
-# Build your LSTM model using TensorFlow
-model2 = tf.keras.Sequential([
-    tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
-    tf.keras.layers.LSTM(50, activation='relu', return_sequences=True),
-    tf.keras.layers.LSTM(100, activation='relu', return_sequences=True),
-    tf.keras.layers.LSTM(200, activation='relu', return_sequences=True),
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(num_classes, activation='softmax')
-])
-
-# Compile the model
-model2.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
-
-model2.summary()
-
-
-# %%
-# Train the model
-history2 = model2.fit(X_train, y_train, epochs=10, batch_size=128, validation_split=0.2, verbose=2)
-
-# Evaluate the model
-test_loss, test_acc = model2.evaluate(X_test, y_test, verbose=2)
-print(f"Test accuracy: {test_acc * 100:.2f}%")
-
-# %%
-
 
 
