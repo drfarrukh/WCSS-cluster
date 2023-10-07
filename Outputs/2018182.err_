@@ -1,0 +1,31 @@
+INFO:    underlay of /etc/localtime required more than 50 (92) bind mounts
+INFO:    underlay of /usr/bin/nvidia-smi required more than 50 (457) bind mounts
+INFO:    underlay of /etc/localtime required more than 50 (92) bind mounts
+INFO:    underlay of /usr/bin/nvidia-smi required more than 50 (457) bind mounts
+INFO:    underlay of /etc/localtime required more than 50 (92) bind mounts
+INFO:    underlay of /usr/bin/nvidia-smi required more than 50 (457) bind mounts
+2023-10-07 22:30:59.850747: E tensorflow/compiler/xla/stream_executor/cuda/cuda_dnn.cc:9342] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2023-10-07 22:30:59.850804: E tensorflow/compiler/xla/stream_executor/cuda/cuda_fft.cc:609] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2023-10-07 22:30:59.854606: E tensorflow/compiler/xla/stream_executor/cuda/cuda_blas.cc:1518] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2023-10-07 22:31:00.225418: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/home/abbass12/Desktop/farrukh/WCSS-cluster/./NIDS_CICIDS18_without_smote.py:42: DtypeWarning: Columns (0,1,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78) have mixed types. Specify dtype option on import or set low_memory=False.
+  df = pd.read_csv('preprocessed_data.csv', parse_dates=True, keep_date_col=True)
+2023-10-07 22:34:46.416259: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1886] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 15388 MB memory:  -> device: 0, name: Tesla P100-PCIE-16GB, pci bus id: 0000:af:00.0, compute capability: 6.0
+2023-10-07 22:34:51.899207: I tensorflow/compiler/xla/stream_executor/cuda/cuda_dnn.cc:442] Loaded cuDNN version 8600
+2023-10-07 22:34:55.982951: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x154683640950 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
+2023-10-07 22:34:55.982982: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Tesla P100-PCIE-16GB, Compute Capability 6.0
+2023-10-07 22:34:55.995633: I tensorflow/compiler/mlir/tensorflow/utils/dump_mlir_util.cc:269] disabling MLIR crash reproducer, set env var `MLIR_CRASH_REPRODUCER_DIRECTORY` to enable.
+2023-10-07 22:34:56.130279: I ./tensorflow/compiler/jit/device_compiler.h:186] Compiled cluster using XLA!  This line is logged at most once for the lifetime of the process.
+Traceback (most recent call last):
+  File "/home/abbass12/Desktop/farrukh/WCSS-cluster/./NIDS_CICIDS18_without_smote.py", line 377, in <module>
+    train_and_evaluate(model1, X_train, y_train, X_test, y_test, class_labels, 'Output_plots', 'model1')
+  File "/home/abbass12/Desktop/farrukh/WCSS-cluster/./NIDS_CICIDS18_without_smote.py", line 368, in train_and_evaluate
+    class_report = classification_report(y_test, y_pred_classes, target_names=class_labels)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abbass12/.local/lib/python3.11/site-packages/sklearn/utils/_param_validation.py", line 211, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abbass12/.local/lib/python3.11/site-packages/sklearn/metrics/_classification.py", line 2561, in classification_report
+    raise ValueError(
+ValueError: Number of classes, 14, does not match size of target_names, 15. Try specifying the labels parameter

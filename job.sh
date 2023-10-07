@@ -2,7 +2,7 @@
 #SBATCH -N 1
 #SBATCH -c 8
 #SBATCH --mem=60gb
-#SBATCH --time=03:00:00
+#SBATCH --time=12:00:00
 #SBATCH --job-name=Classification
 #SBATCH --error=Outputs/%j.err_
 #SBATCH --output=Outputs/%J.out_
