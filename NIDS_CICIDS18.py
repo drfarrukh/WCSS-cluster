@@ -240,8 +240,8 @@ print(f'Shape of  X_test: {X_test.shape}')
 print(f'Shape of  y_test: {y_test.shape}')
 
 
-%%
-# # Apply SMOTE to balance the training set
+# %%
+# Apply SMOTE to balance the training set
 smote = SMOTE(sampling_strategy='auto', random_state=42)
 X_train, y_train = smote.fit_resample(X_train, y_train)
 
