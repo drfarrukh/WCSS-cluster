@@ -478,5 +478,53 @@ def train_and_evaluate(model, X_train, y_train, X_test, y_test, class_labels, ou
     with open(f'{output_folder}/{model_name}_classification_report.txt', 'w') as report_file:
         report_file.write(class_report)
 
-# Example usage:
-# train_and_evaluate(model1, X_train, y_train, X_test, y_test, class_labels, 'Output_plots', 'model1')
+
+
+train_and_evaluate(model1, X_train, y_train, X_test, y_test, class_labels, 'Output_plots', 'model1')
+
+model2 = tf.keras.Sequential([
+    tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
+    tf.keras.layers.Conv1D(128, kernel_size=3, activation='relu', input_shape=(X_train.shape[1], 1)),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Conv1D(256, kernel_size=3, activation='relu'),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Conv1D(512, kernel_size=3, activation='relu'),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(num_classes, activation='softmax')
+])
+
+# Compile the model
+model2.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+model2.summary()
+
+train_and_evaluate(model2, X_train, y_train, X_test, y_test, class_labels, 'Output_plots', 'model2')
+
+
+model3 = tf.keras.Sequential([
+    tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
+    tf.keras.layers.Conv1D(128, kernel_size=3, activation='relu', input_shape=(X_train.shape[1], 1)),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Conv1D(64, kernel_size=3, activation='relu'),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Conv1D(32, kernel_size=3, activation='relu'),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(64, activation='relu'),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(num_classes, activation='softmax')
+])
+
+# Compile the model
+model3.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+model3.summary()
+
+train_and_evaluate(model3, X_train, y_train, X_test, y_test, class_labels, 'Output_plots', 'model3')
