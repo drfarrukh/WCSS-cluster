@@ -434,5 +434,49 @@ test_loss, test_acc = model1.evaluate(X_test, y_test, verbose=2)
 print(f"Test accuracy: {test_acc * 100:.2f}%")
 
 # %%
+import matplotlib.pyplot as plt
+from sklearn.metrics import classification_report
+import numpy as np
 
+def train_and_evaluate(model, X_train, y_train, X_test, y_test, class_labels, output_folder, model_name):
+    # Train the model
+    history = model.fit(X_train, y_train, epochs=30, batch_size=128, validation_split=0.2, verbose=2)
 
+    # Evaluate the model
+    test_loss, test_acc = model.evaluate(X_test, y_test, verbose=2)
+    print(f"Test accuracy: {test_acc * 100:.2f}%")
+
+    # Plot training & validation accuracy and loss
+    plt.figure(figsize=(12, 6))
+    plt.subplot(1, 2, 1)
+    plt.plot(history.history['accuracy'])
+    plt.plot(history.history['val_accuracy'])
+    plt.title(f'{model_name} - Model accuracy')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Validation'], loc='upper left')
+
+    plt.subplot(1, 2, 2)
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title(f'{model_name} - Model loss')
+    plt.ylabel('Loss')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Validation'], loc='upper left')
+
+    # Save the plots to the output folder
+    plt.savefig(f'{output_folder}/{model_name}_training_plots.png')
+    plt.show()
+
+    # Generate a classification report
+    y_pred = model.predict(X_test)
+    y_pred_classes = np.argmax(y_pred, axis=1)
+    class_report = classification_report(y_test, y_pred_classes, target_names=class_labels)
+
+    # Print and save the classification report
+    print(class_report)
+    with open(f'{output_folder}/{model_name}_classification_report.txt', 'w') as report_file:
+        report_file.write(class_report)
+
+# Example usage:
+# train_and_evaluate(model1, X_train, y_train, X_test, y_test, class_labels, 'Output_plots', 'model1')
