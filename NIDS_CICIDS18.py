@@ -427,7 +427,7 @@ model1.summary()
 
 # %%
 # Train the model
-history1 = model1.fit(X_train, y_train, epochs=10, batch_size=128, validation_split=0.2)
+history1 = model1.fit(X_train, y_train, epochs=10, batch_size=128, validation_split=0.2, verbose=2)
 
 # Evaluate the model
 test_loss, test_acc = model1.evaluate(X_test, y_test, verbose=2)
@@ -461,50 +461,11 @@ model2.summary()
 
 # %%
 # Train the model
-history2 = model2.fit(X_train, y_train, epochs=10, batch_size=128, validation_split=0.2)
+history2 = model2.fit(X_train, y_train, epochs=10, batch_size=128, validation_split=0.2, verbose=2)
 
 # Evaluate the model
 test_loss, test_acc = model2.evaluate(X_test, y_test, verbose=2)
 print(f"Test accuracy: {test_acc * 100:.2f}%")
-
-# %%
-
-
-# %%
-import tensorflow as tf
-
-# Build your CNN-LSTM model using TensorFlow
-model3 = tf.keras.Sequential([
-    tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1, 1), input_shape=(X_train.shape[1],)),
-    tf.keras.layers.ConvLSTM2D(50, kernel_size=(3, 1), activation='relu', return_sequences=True),
-    tf.keras.layers.MaxPooling2D(pool_size=(2, 1)),
-    tf.keras.layers.ConvLSTM2D(100, kernel_size=(3, 1), activation='relu', return_sequences=True),
-    tf.keras.layers.MaxPooling2D(pool_size=(2, 1)),
-    tf.keras.layers.ConvLSTM2D(200, kernel_size=(3, 1), activation='relu', return_sequences=True),
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(num_classes, activation='softmax')
-])
-
-# Compile the model
-model3.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
-
-model3.summary()
-
-
-# %%
-# Train the model
-history3 = model3.fit(X_train, y_train, epochs=30, batch_size=128, validation_split=0.2)
-
-# Evaluate the model
-test_loss, test_acc = model.evaluate(X_test, y_test, verbose=2)
-print(f"Test accuracy: {test_acc * 100:.2f}%")
-
-# %%
-
 
 # %%
 
