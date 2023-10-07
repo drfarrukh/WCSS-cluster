@@ -1,0 +1,12 @@
+INFO:    underlay of /etc/localtime required more than 50 (92) bind mounts
+INFO:    underlay of /usr/bin/nvidia-smi required more than 50 (457) bind mounts
+INFO:    underlay of /etc/localtime required more than 50 (92) bind mounts
+INFO:    underlay of /usr/bin/nvidia-smi required more than 50 (457) bind mounts
+ERROR: Could not find a version that satisfies the requirement kerastuner (from versions: none)
+ERROR: No matching distribution found for kerastuner
+INFO:    underlay of /etc/localtime required more than 50 (92) bind mounts
+INFO:    underlay of /usr/bin/nvidia-smi required more than 50 (457) bind mounts
+  File "/home/abbass12/Desktop/farrukh/WCSS-cluster/./NIDS_CICIDS18.py", line 243
+    %%
+    ^
+SyntaxError: invalid syntax

@@ -53,6 +53,8 @@ df.head()
 Labels_in_df = df['Label'].unique()
 df['Label'].value_counts()
 
+class_labels = df['Label'].value_counts().index.tolist()
+
 # %%
 rows_with_header = df[df['Label'].str.contains('Label')]
 rows_with_header
@@ -86,6 +88,7 @@ plt.legend(labels=df['Label'].value_counts().index, loc='upper right')
 plt.axis('equal')
 
 # Display the plot
+plt.savefig('Output_plots/before_Downsampling_of_Benign_class_pie.png')
 plt.show()
 
 
@@ -104,6 +107,7 @@ plt.title('Distribution of Labels before Downsampling of "Benign" Class')
 
 # Display the plot
 plt.tight_layout()
+plt.savefig('Output_plots/before_Downsampling_of_Benign_class_bar.png')
 plt.show()
 
 
@@ -151,6 +155,7 @@ plt.legend(labels=df['Label'].value_counts().index, loc='upper right')
 plt.axis('equal')
 
 # Display the plot
+plt.savefig('Output_plots/after_Downsampling_of_Benign_class_pie.png')
 plt.show()
 
 
@@ -169,6 +174,7 @@ plt.title('Distribution of Labels after Downsampling of "Benign" Class')
 
 # Display the plot
 plt.tight_layout()
+plt.savefig('Output_plots/after_Downsampling_of_Benign_class_bar.png')
 plt.show()
 
 
@@ -234,15 +240,15 @@ print(f'Shape of  X_test: {X_test.shape}')
 print(f'Shape of  y_test: {y_test.shape}')
 
 
-# %%
-# # # Apply SMOTE to balance the training set
-# smote = SMOTE(sampling_strategy='auto', random_state=42)
-# X_train, y_train = smote.fit_resample(X_train, y_train)
+%%
+# # Apply SMOTE to balance the training set
+smote = SMOTE(sampling_strategy='auto', random_state=42)
+X_train, y_train = smote.fit_resample(X_train, y_train)
 
-# # Check the new distribution of labels
-# print(y_train.value_counts())
+# Check the new distribution of labels
+print(y_train.value_counts())
 
-# gc.collect()
+gc.collect()
 
 # %%
 # # Your code to create a bar chart for label counts
@@ -281,37 +287,37 @@ print(f'Type of y_train: {type(y_test)}')
 num_classes = len(Labels_in_df)
 print(num_classes)
 
-# # %%
-# import tensorflow as tf
-# from sklearn.model_selection import train_test_split
-# from sklearn.preprocessing import LabelEncoder
-# import pandas as pd
+# %%
+import tensorflow as tf
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+import pandas as pd
 
-# # %%
-# # Build your CNN model using TensorFlow
-# model1 = tf.keras.Sequential([
-#     tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
-#     tf.keras.layers.Conv1D(64, kernel_size=3, activation='relu', input_shape=(X_train.shape[1], 1)),
-#     tf.keras.layers.BatchNormalization(),
-#     tf.keras.layers.MaxPooling1D(pool_size=2),
-#     tf.keras.layers.Conv1D(128, kernel_size=3, activation='relu'),
-#     tf.keras.layers.BatchNormalization(),
-#     tf.keras.layers.MaxPooling1D(pool_size=2),
-#     tf.keras.layers.Conv1D(256, kernel_size=3, activation='relu'),
-#     tf.keras.layers.BatchNormalization(),
-#     tf.keras.layers.MaxPooling1D(pool_size=2),
-#     tf.keras.layers.Flatten(),
-#     tf.keras.layers.Dense(128, activation='relu'),
-#     tf.keras.layers.Dense(128, activation='relu'),
-#     tf.keras.layers.Dense(num_classes, activation='softmax')
-# ])
+# %%
+# Build your CNN model using TensorFlow
+model1 = tf.keras.Sequential([
+    tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
+    tf.keras.layers.Conv1D(64, kernel_size=3, activation='relu', input_shape=(X_train.shape[1], 1)),
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Conv1D(128, kernel_size=3, activation='relu'),
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Conv1D(256, kernel_size=3, activation='relu'),
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(num_classes, activation='softmax')
+])
 
-# # Compile the model
-# model1.compile(optimizer='adam',
-#               loss='sparse_categorical_crossentropy',
-#               metrics=['accuracy'])
+# Compile the model
+model1.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
 
-# model1.summary()
+model1.summary()
 
 # %%
 # Train the model
