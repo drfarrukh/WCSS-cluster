@@ -313,75 +313,106 @@ print(num_classes)
 
 # model1.summary()
 
-# # %%
-# # Train the model
-# history1 = model1.fit(X_train, y_train, epochs=10, batch_size=128, validation_split=0.2, verbose=2)
+# %%
+# Train the model
+history1 = model1.fit(X_train, y_train, epochs=30, batch_size=128, validation_split=0.2, verbose=2)
 
 # # Evaluate the model
 # test_loss, test_acc = model1.evaluate(X_test, y_test, verbose=2)
 # print(f"Test accuracy: {test_acc * 100:.2f}%")
 
-#%%
-import kerastuner as kt
-import tensorflow as tf
-from tensorflow.keras.layers import Conv1D, BatchNormalization, MaxPooling1D, Flatten, Dense, Reshape
-from kerastuner.tuners import RandomSearch
+# %%
+import matplotlib.pyplot as plt
+from sklearn.metrics import classification_report
+import numpy as np
 
-# Define a function to build the model with hyperparameters
-def build_model(hp):
-    model = tf.keras.Sequential([
-        Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
-    ])
-    
-    # Tune the number of convolutional layers
-    num_conv_layers = hp.Int('num_conv_layers', min_value=1, max_value=3, default=3)
-    for _ in range(num_conv_layers):
-        model.add(Conv1D(filters=hp.Int('conv_filters', min_value=32, max_value=256, step=32),
-                         kernel_size=hp.Int('conv_kernel_size', min_value=2, max_value=5),
-                         activation='relu'))
-        model.add(BatchNormalization())
-        model.add(MaxPooling1D(pool_size=2))
-    
-    model.add(Flatten())
-    
-    # Tune the number of dense layers
-    num_dense_layers = hp.Int('num_dense_layers', min_value=1, max_value=3, default=2)
-    for _ in range(num_dense_layers):
-        model.add(Dense(units=hp.Int('dense_units', min_value=32, max_value=256, step=32),
-                        activation='relu'))
-    
-    model.add(Dense(num_classes, activation='softmax'))
-    
-    # Tune the learning rate
-    hp_learning_rate = hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4])
-    
-    # Compile the model with the tuned hyperparameters
-    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=hp_learning_rate),
-                  loss='sparse_categorical_crossentropy',
-                  metrics=['accuracy'])
-    
-    return model
+def train_and_evaluate(model, X_train, y_train, X_test, y_test, class_labels, output_folder, model_name):
+    # Train the model
+    history = model.fit(X_train, y_train, epochs=30, batch_size=128, validation_split=0.2, verbose=2)
 
-# Define the tuner for hyperparameter search
-tuner = RandomSearch(
-    build_model,
-    objective='val_accuracy',
-    max_trials=10,  # You can adjust the number of trials as needed.
-    directory='tuner_dir',  # Change this to your desired directory for saving results.
-    project_name='hyperparameter_tuning'
-)
+    # Evaluate the model
+    test_loss, test_acc = model.evaluate(X_test, y_test, verbose=2)
+    print(f"Test accuracy: {test_acc * 100:.2f}%")
 
-# Perform hyperparameter tuning
-tuner.search(X_train, y_train, epochs=10, batch_size=hp.Int('batch_size', min_value=32, max_value=256, step=32), validation_split=0.2, verbose=2)
+    # Plot training & validation accuracy and loss
+    plt.figure(figsize=(12, 6))
+    plt.subplot(1, 2, 1)
+    plt.plot(history.history['accuracy'])
+    plt.plot(history.history['val_accuracy'])
+    plt.title(f'{model_name} - Model accuracy')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Validation'], loc='upper left')
 
-# Get the best model
-best_model = tuner.get_best_models(1)[0]
+    plt.subplot(1, 2, 2)
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title(f'{model_name} - Model loss')
+    plt.ylabel('Loss')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Validation'], loc='upper left')
 
-# Summary of the best model
-best_model.summary()
+    # Save the plots to the output folder
+    plt.savefig(f'{output_folder}/{model_name}_training_plots.png')
+    plt.show()
 
-# Evaluate the best model
-test_loss, test_acc = best_model.evaluate(X_test, y_test, verbose=2)
-print(f"Test accuracy of the best model: {test_acc * 100:.2f}%")
+    # Generate a classification report
+    y_pred = model.predict(X_test)
+    y_pred_classes = np.argmax(y_pred, axis=1)
+    class_report = classification_report(y_test, y_pred_classes, target_names=class_labels)
+
+    # Print and save the classification report
+    print(class_report)
+    with open(f'{output_folder}/{model_name}_classification_report.txt', 'w') as report_file:
+        report_file.write(class_report)
 
 
+
+train_and_evaluate(model1, X_train, y_train, X_test, y_test, class_labels, 'Output_plots', 'model1')
+
+model2 = tf.keras.Sequential([
+    tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
+    tf.keras.layers.Conv1D(128, kernel_size=3, activation='relu', input_shape=(X_train.shape[1], 1)),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Conv1D(256, kernel_size=3, activation='relu'),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Conv1D(512, kernel_size=3, activation='relu'),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(num_classes, activation='softmax')
+])
+
+# Compile the model
+model2.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+model2.summary()
+
+train_and_evaluate(model2, X_train, y_train, X_test, y_test, class_labels, 'Output_plots', 'model2')
+
+
+model3 = tf.keras.Sequential([
+    tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
+    tf.keras.layers.Conv1D(128, kernel_size=3, activation='relu', input_shape=(X_train.shape[1], 1)),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Conv1D(64, kernel_size=3, activation='relu'),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Conv1D(32, kernel_size=3, activation='relu'),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(64, activation='relu'),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(num_classes, activation='softmax')
+])
+
+# Compile the model
+model3.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+model3.summary()
+
+train_and_evaluate(model3, X_train, y_train, X_test, y_test, class_labels, 'Output_plots', 'model3')
