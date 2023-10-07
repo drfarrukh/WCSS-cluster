@@ -39,122 +39,7 @@ for gpu in gpus:
     print(details['device_name'])
 
 # %%
-def reduce_mem_usage(df):
-    """ iterate through all the columns of a dataframe and modify the data type
-        to reduce memory usage.        
-    """
-    start_mem = df.memory_usage().sum() / 1024**2
-    print('Memory usage of dataframe is {:.2f} MB'.format(start_mem))
-    
-    for col in df.columns:
-        col_type = df[col].dtype
-        
-        if col_type != object:
-            c_min = df[col].min()
-            c_max = df[col].max()
-            if str(col_type)[:3] == 'int':
-                if c_min > np.iinfo(np.int8).min and c_max < np.iinfo(np.int8).max:
-                    df[col] = df[col].astype(np.int8)
-                elif c_min > np.iinfo(np.int16).min and c_max < np.iinfo(np.int16).max:
-                    df[col] = df[col].astype(np.int16)
-                elif c_min > np.iinfo(np.int32).min and c_max < np.iinfo(np.int32).max:
-                    df[col] = df[col].astype(np.int32)
-                elif c_min > np.iinfo(np.int64).min and c_max < np.iinfo(np.int64).max:
-                    df[col] = df[col].astype(np.int64)  
-            else:
-                if c_min > np.finfo(np.float16).min and c_max < np.finfo(np.float16).max:
-                    df[col] = df[col].astype(np.float16)
-                elif c_min > np.finfo(np.float32).min and c_max < np.finfo(np.float32).max:
-                    df[col] = df[col].astype(np.float32)
-                elif c_min > np.finfo(np.float64).min and c_max < np.finfo(np.float64).max:
-                    df[col] = df[col].astype(np.float64)
-                # else:
-                #     df[col] = 0.0  # Set values larger than float64 to zero
-        else:
-            df[col] = df[col].astype('category')
-    
-    end_mem = df.memory_usage().sum() / 1024**2
-    print('Memory usage after optimization is: {:.2f} MB'.format(end_mem))
-    print('Decreased by {:.1f}%'.format(100 * (start_mem - end_mem) / start_mem))
-    
-    return df
-
-
-def import_data(file):
-    """create a dataframe and optimize its memory usage"""
-    df = pd.read_csv(file, parse_dates=True, keep_date_col=True)
-    df = reduce_mem_usage(df)
-    gc.collect()
-    return df
-
-# %%
-
-import os
-
-folder_path = './kaggle_data'  # Replace with the actual folder path
-
-# Get a list of all files in the folder
-files_list = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
-
-# files_list =['Friday-02-03-2018_TrafficForML_CICFlowMeter.csv',
-#              'Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv',
-             
-#              ]
-
-# %%
-dataset_csv_path = './kaggle_data'
-
-complete_paths = []
-for csv_file_name in files_list:
-    complete_paths.append(os.path.join(dataset_csv_path, csv_file_name))
-
-df = pd.concat(map(import_data, complete_paths), 
-               ignore_index = True)
-
-print("Dataset Loaded")
-
-# %%
-df['Label'].value_counts()
-
-# %%
-def clean_df(df):
-    # Remove the space before each feature names
-    df.columns = df.columns.str.strip()
-    print('dataset shape', df.shape)
-
-    # This set of feature should have >= 0 values
-    num = df._get_numeric_data()
-    num[num < 0] = 0
-
-    zero_variance_cols = []
-    for col in df.columns:
-        if len(df[col].unique()) == 1:
-            zero_variance_cols.append(col)
-    df.drop(zero_variance_cols, axis = 1, inplace = True)
-    print('zero variance columns', zero_variance_cols, 'dropped')
-    print('shape after removing zero variance columns:', df.shape)
-
-    df.replace([np.inf, -np.inf], np.nan, inplace = True)
-    print(df.isna().any(axis = 1).sum(), 'rows dropped')
-    df.dropna(inplace = True)
-    print('shape after removing nan:', df.shape)
-
-    # Drop duplicate rows
-    df.drop_duplicates(inplace = True)
-    print('shape after dropping duplicates:', df.shape)
-
-    column_pairs = [(i, j) for i, j in combinations(df, 2) if df[i].equals(df[j])]
-    ide_cols = []
-    for column_pair in column_pairs:
-        ide_cols.append(column_pair[1])
-    df.drop(ide_cols, axis = 1, inplace = True)
-    print('columns which have identical values', column_pairs, 'dropped')
-    print('shape after removing identical value columns:', df.shape)
-    gc.collect()
-    return df
-
-# %%
-df = clean_df(df)
+df = pd.read_csv('preprocessed_data.csv', parse_dates=True, keep_date_col=True)
 print(f'Instances: {df.shape[0]}')
 print(f'Features: {df.shape[1]}')
 
@@ -396,117 +281,107 @@ print(f'Type of y_train: {type(y_test)}')
 num_classes = len(Labels_in_df)
 print(num_classes)
 
-# %%
+# # %%
+# import tensorflow as tf
+# from sklearn.model_selection import train_test_split
+# from sklearn.preprocessing import LabelEncoder
+# import pandas as pd
+
+# # %%
+# # Build your CNN model using TensorFlow
+# model1 = tf.keras.Sequential([
+#     tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
+#     tf.keras.layers.Conv1D(64, kernel_size=3, activation='relu', input_shape=(X_train.shape[1], 1)),
+#     tf.keras.layers.BatchNormalization(),
+#     tf.keras.layers.MaxPooling1D(pool_size=2),
+#     tf.keras.layers.Conv1D(128, kernel_size=3, activation='relu'),
+#     tf.keras.layers.BatchNormalization(),
+#     tf.keras.layers.MaxPooling1D(pool_size=2),
+#     tf.keras.layers.Conv1D(256, kernel_size=3, activation='relu'),
+#     tf.keras.layers.BatchNormalization(),
+#     tf.keras.layers.MaxPooling1D(pool_size=2),
+#     tf.keras.layers.Flatten(),
+#     tf.keras.layers.Dense(128, activation='relu'),
+#     tf.keras.layers.Dense(128, activation='relu'),
+#     tf.keras.layers.Dense(num_classes, activation='softmax')
+# ])
+
+# # Compile the model
+# model1.compile(optimizer='adam',
+#               loss='sparse_categorical_crossentropy',
+#               metrics=['accuracy'])
+
+# model1.summary()
+
+# # %%
+# # Train the model
+# history1 = model1.fit(X_train, y_train, epochs=10, batch_size=128, validation_split=0.2, verbose=2)
+
+# # Evaluate the model
+# test_loss, test_acc = model1.evaluate(X_test, y_test, verbose=2)
+# print(f"Test accuracy: {test_acc * 100:.2f}%")
+
+#%%
+import kerastuner as kt
 import tensorflow as tf
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-import pandas as pd
+from tensorflow.keras.layers import Conv1D, BatchNormalization, MaxPooling1D, Flatten, Dense, Reshape
+from kerastuner.tuners import RandomSearch
 
-# %%
-# Build your CNN model using TensorFlow
-model1 = tf.keras.Sequential([
-    tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
-    tf.keras.layers.Conv1D(64, kernel_size=3, activation='relu', input_shape=(X_train.shape[1], 1)),
-    tf.keras.layers.MaxPooling1D(pool_size=2),
-    tf.keras.layers.Conv1D(128, kernel_size=3, activation='relu'),
-    tf.keras.layers.MaxPooling1D(pool_size=2),
-    tf.keras.layers.Conv1D(256, kernel_size=3, activation='relu'),
-    tf.keras.layers.MaxPooling1D(pool_size=2),
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(num_classes, activation='softmax')
-])
+# Define a function to build the model with hyperparameters
+def build_model(hp):
+    model = tf.keras.Sequential([
+        Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
+    ])
+    
+    # Tune the number of convolutional layers
+    num_conv_layers = hp.Int('num_conv_layers', min_value=1, max_value=3, default=3)
+    for _ in range(num_conv_layers):
+        model.add(Conv1D(filters=hp.Int('conv_filters', min_value=32, max_value=256, step=32),
+                         kernel_size=hp.Int('conv_kernel_size', min_value=2, max_value=5),
+                         activation='relu'))
+        model.add(BatchNormalization())
+        model.add(MaxPooling1D(pool_size=2))
+    
+    model.add(Flatten())
+    
+    # Tune the number of dense layers
+    num_dense_layers = hp.Int('num_dense_layers', min_value=1, max_value=3, default=2)
+    for _ in range(num_dense_layers):
+        model.add(Dense(units=hp.Int('dense_units', min_value=32, max_value=256, step=32),
+                        activation='relu'))
+    
+    model.add(Dense(num_classes, activation='softmax'))
+    
+    # Tune the learning rate
+    hp_learning_rate = hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4])
+    
+    # Compile the model with the tuned hyperparameters
+    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=hp_learning_rate),
+                  loss='sparse_categorical_crossentropy',
+                  metrics=['accuracy'])
+    
+    return model
 
-# Compile the model
-model1.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
+# Define the tuner for hyperparameter search
+tuner = RandomSearch(
+    build_model,
+    objective='val_accuracy',
+    max_trials=10,  # You can adjust the number of trials as needed.
+    directory='tuner_dir',  # Change this to your desired directory for saving results.
+    project_name='hyperparameter_tuning'
+)
 
-model1.summary()
+# Perform hyperparameter tuning
+tuner.search(X_train, y_train, epochs=10, batch_size=hp.Int('batch_size', min_value=32, max_value=256, step=32), validation_split=0.2, verbose=2)
 
-# %%
-# Train the model
-history1 = model1.fit(X_train, y_train, epochs=10, batch_size=128, validation_split=0.2)
+# Get the best model
+best_model = tuner.get_best_models(1)[0]
 
-# Evaluate the model
-test_loss, test_acc = model1.evaluate(X_test, y_test, verbose=2)
-print(f"Test accuracy: {test_acc * 100:.2f}%")
+# Summary of the best model
+best_model.summary()
 
-# %%
-
-
-# %%
-import tensorflow as tf
-
-# Build your LSTM model using TensorFlow
-model2 = tf.keras.Sequential([
-    tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
-    tf.keras.layers.LSTM(50, activation='relu', return_sequences=True),
-    tf.keras.layers.LSTM(100, activation='relu', return_sequences=True),
-    tf.keras.layers.LSTM(200, activation='relu', return_sequences=True),
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(num_classes, activation='softmax')
-])
-
-# Compile the model
-model2.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
-
-model2.summary()
-
-
-# %%
-# Train the model
-history2 = model2.fit(X_train, y_train, epochs=10, batch_size=128, validation_split=0.2)
-
-# Evaluate the model
-test_loss, test_acc = model2.evaluate(X_test, y_test, verbose=2)
-print(f"Test accuracy: {test_acc * 100:.2f}%")
-
-# %%
-
-
-# %%
-import tensorflow as tf
-
-# Build your CNN-LSTM model using TensorFlow
-model3 = tf.keras.Sequential([
-    tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1, 1), input_shape=(X_train.shape[1],)),
-    tf.keras.layers.ConvLSTM2D(50, kernel_size=(3, 1), activation='relu', return_sequences=True),
-    tf.keras.layers.MaxPooling2D(pool_size=(2, 1)),
-    tf.keras.layers.ConvLSTM2D(100, kernel_size=(3, 1), activation='relu', return_sequences=True),
-    tf.keras.layers.MaxPooling2D(pool_size=(2, 1)),
-    tf.keras.layers.ConvLSTM2D(200, kernel_size=(3, 1), activation='relu', return_sequences=True),
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(num_classes, activation='softmax')
-])
-
-# Compile the model
-model3.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
-
-model3.summary()
-
-
-# %%
-# Train the model
-history3 = model3.fit(X_train, y_train, epochs=30, batch_size=128, validation_split=0.2)
-
-# Evaluate the model
-test_loss, test_acc = model.evaluate(X_test, y_test, verbose=2)
-print(f"Test accuracy: {test_acc * 100:.2f}%")
-
-# %%
-
-
-# %%
-
+# Evaluate the best model
+test_loss, test_acc = best_model.evaluate(X_test, y_test, verbose=2)
+print(f"Test accuracy of the best model: {test_acc * 100:.2f}%")
 
 
