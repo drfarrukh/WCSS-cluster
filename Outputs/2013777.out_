@@ -1,0 +1,131 @@
+1
+Tesla P100-PCIE-16GB
+Instances: 7841683
+Features: 80
+Label
+Benign                      668461
+DDOS attack-HOIC            668461
+DoS attacks-Hulk            434883
+Bot                         282310
+Infilteration               160705
+SSH-Bruteforce              117322
+DoS attacks-GoldenEye        41455
+FTP-BruteForce               39346
+DoS attacks-SlowHTTPTest     21092
+DoS attacks-Slowloris        10285
+DDOS attack-LOIC-UDP          1730
+Brute Force -Web               609
+Brute Force -XSS               230
+SQL Injection                   87
+Name: count, dtype: int64
+Label
+Benign                      668461
+DDOS attack-HOIC            668461
+DoS attacks-Hulk            434883
+Bot                         282310
+Infilteration               160705
+SSH-Bruteforce              117322
+DoS attacks-GoldenEye        41455
+FTP-BruteForce               39346
+DoS attacks-SlowHTTPTest     21092
+DoS attacks-Slowloris        10285
+DDOS attack-LOIC-UDP          1730
+Brute Force -Web               609
+Brute Force -XSS               230
+SQL Injection                   87
+Name: count, dtype: int64
+{0: 'Benign', 1: 'Bot', 4: 'DDOS attack-HOIC', 6: 'DoS attacks-GoldenEye', 7: 'DoS attacks-Hulk', 11: 'Infilteration', 9: 'DoS attacks-Slowloris', 8: 'DoS attacks-SlowHTTPTest', 10: 'FTP-BruteForce', 13: 'SSH-Bruteforce', 2: 'Brute Force -Web', 5: 'DDOS attack-LOIC-UDP', 3: 'Brute Force -XSS', 12: 'SQL Injection'}
+Intial values with Inf:          (2446976, 76)
+Intial values after Inf removal: (2446758, 76)
+Normalized shape: (2446758, 76) 
+
+Shape of X_train: (1957406, 76)
+Shape of y_train: (1957406,)
+Shape of  X_test: (489352, 76)
+Shape of  y_test: (489352,)
+Label
+6     534769
+0     534769
+13    534769
+4     534769
+1     534769
+7     534769
+11    534769
+10    534769
+8     534769
+9     534769
+5     534769
+3     534769
+12    534769
+2     534769
+Name: count, dtype: int64
+Type of X_train: <class 'numpy.ndarray'>
+Type of y_train: <class 'numpy.ndarray'>
+Type of X_test: <class 'numpy.ndarray'>
+Type of y_train: <class 'numpy.ndarray'>
+14
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ reshape (Reshape)           (None, 76, 1)             0         
+                                                                 
+ conv1d (Conv1D)             (None, 74, 64)            256       
+                                                                 
+ batch_normalization (Batch  (None, 74, 64)            256       
+ Normalization)                                                  
+                                                                 
+ max_pooling1d (MaxPooling1  (None, 37, 64)            0         
+ D)                                                              
+                                                                 
+ conv1d_1 (Conv1D)           (None, 35, 128)           24704     
+                                                                 
+ batch_normalization_1 (Bat  (None, 35, 128)           512       
+ chNormalization)                                                
+                                                                 
+ max_pooling1d_1 (MaxPoolin  (None, 17, 128)           0         
+ g1D)                                                            
+                                                                 
+ conv1d_2 (Conv1D)           (None, 15, 256)           98560     
+                                                                 
+ batch_normalization_2 (Bat  (None, 15, 256)           1024      
+ chNormalization)                                                
+                                                                 
+ max_pooling1d_2 (MaxPoolin  (None, 7, 256)            0         
+ g1D)                                                            
+                                                                 
+ flatten (Flatten)           (None, 1792)              0         
+                                                                 
+ dense (Dense)               (None, 128)               229504    
+                                                                 
+ dense_1 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_2 (Dense)             (None, 14)                1806      
+                                                                 
+=================================================================
+Total params: 373134 (1.42 MB)
+Trainable params: 372238 (1.42 MB)
+Non-trainable params: 896 (3.50 KB)
+_________________________________________________________________
+Epoch 1/10
+46793/46793 - 229s - loss: 0.2643 - accuracy: 0.8745 - val_loss: 5.6560 - val_accuracy: 0.4231 - 229s/epoch - 5ms/step
+Epoch 2/10
+46793/46793 - 218s - loss: 0.2257 - accuracy: 0.8944 - val_loss: 3.5698 - val_accuracy: 0.4261 - 218s/epoch - 5ms/step
+Epoch 3/10
+46793/46793 - 218s - loss: 0.2152 - accuracy: 0.8988 - val_loss: 5.9548 - val_accuracy: 0.4236 - 218s/epoch - 5ms/step
+Epoch 4/10
+46793/46793 - 217s - loss: 0.2091 - accuracy: 0.9016 - val_loss: 4.2017 - val_accuracy: 0.5186 - 217s/epoch - 5ms/step
+Epoch 5/10
+46793/46793 - 216s - loss: 0.2020 - accuracy: 0.9044 - val_loss: 8.1820 - val_accuracy: 0.2932 - 216s/epoch - 5ms/step
+Epoch 6/10
+46793/46793 - 216s - loss: 0.2009 - accuracy: 0.9048 - val_loss: 12.2957 - val_accuracy: 0.5240 - 216s/epoch - 5ms/step
+Epoch 7/10
+46793/46793 - 216s - loss: 0.2007 - accuracy: 0.9050 - val_loss: 5.7340 - val_accuracy: 0.5113 - 216s/epoch - 5ms/step
+Epoch 8/10
+46793/46793 - 216s - loss: 0.2022 - accuracy: 0.9045 - val_loss: 5.4439 - val_accuracy: 0.4390 - 216s/epoch - 5ms/step
+Epoch 9/10
+46793/46793 - 216s - loss: 0.2008 - accuracy: 0.9049 - val_loss: 4.8269 - val_accuracy: 0.4894 - 216s/epoch - 5ms/step
+Epoch 10/10
+46793/46793 - 216s - loss: 0.2024 - accuracy: 0.9044 - val_loss: 5.7011 - val_accuracy: 0.4362 - 216s/epoch - 5ms/step
+15293/15293 - 21s - loss: 0.1583 - accuracy: 0.9330 - 21s/epoch - 1ms/step
+Test accuracy: 93.30%
