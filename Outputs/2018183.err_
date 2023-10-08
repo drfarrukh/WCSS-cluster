@@ -29,3 +29,21 @@ Traceback (most recent call last):
   File "/home/abbass12/.local/lib/python3.11/site-packages/sklearn/metrics/_classification.py", line 2561, in classification_report
     raise ValueError(
 ValueError: Number of classes, 14, does not match size of target_names, 15. Try specifying the labels parameter
+Missing or invalid credentials.
+Error: connect ENOENT /run/user/4692/vscode-git-1348135cf3.sock
+    at PipeConnectWrap.afterConnect [as oncomplete] (node:net:1494:16) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'connect',
+  address: '/run/user/4692/vscode-git-1348135cf3.sock'
+}
+Missing or invalid credentials.
+Error: connect ENOENT /run/user/4692/vscode-git-1348135cf3.sock
+    at PipeConnectWrap.afterConnect [as oncomplete] (node:net:1494:16) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'connect',
+  address: '/run/user/4692/vscode-git-1348135cf3.sock'
+}
+remote: Repository not found.
+fatal: Authentication failed for 'https://github.com/drfarrukh/WCSS-cluster/'
