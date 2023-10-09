@@ -321,7 +321,7 @@ model1.summary()
 
 # %%
 # Train the model
-history1 = model1.fit(X_train, y_train, epochs=30, batch_size=128, validation_split=0.2, verbose=2)
+history1 = model1.fit(X_train, y_train, epochs=10, batch_size=128, validation_split=0.2, verbose=2)
 
 # # Evaluate the model
 # test_loss, test_acc = model1.evaluate(X_test, y_test, verbose=2)
@@ -332,9 +332,9 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import classification_report
 import numpy as np
 
-def train_and_evaluate(model, X_train, y_train, X_test, y_test, class_labels, output_folder, model_name):
+def train_and_evaluate(model, X_train, y_train, X_test, y_test, output_folder, model_name):
     # Train the model
-    history = model.fit(X_train, y_train, epochs=30, batch_size=128, validation_split=0.2, verbose=2)
+    history = model.fit(X_train, y_train, epochs=10, batch_size=128, validation_split=0.2, verbose=2)
 
     # Evaluate the model
     test_loss, test_acc = model.evaluate(X_test, y_test, verbose=2)
@@ -365,7 +365,7 @@ def train_and_evaluate(model, X_train, y_train, X_test, y_test, class_labels, ou
     # Generate a classification report
     y_pred = model.predict(X_test)
     y_pred_classes = np.argmax(y_pred, axis=1)
-    class_report = classification_report(y_test, y_pred_classes, target_names=class_labels)
+    class_report = classification_report(y_test, y_pred_classes)
 
     # Print and save the classification report
     print(class_report)
@@ -374,7 +374,7 @@ def train_and_evaluate(model, X_train, y_train, X_test, y_test, class_labels, ou
 
 
 
-train_and_evaluate(model1, X_train, y_train, X_test, y_test, class_labels, 'Output_plots', 'model1')
+train_and_evaluate(model1, X_train, y_train, X_test, y_test, 'Output_plots', 'model1')
 
 model2 = tf.keras.Sequential([
     tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
@@ -397,7 +397,7 @@ model2.compile(optimizer='adam',
 
 model2.summary()
 
-train_and_evaluate(model2, X_train, y_train, X_test, y_test, class_labels, 'Output_plots', 'model2')
+train_and_evaluate(model2, X_train, y_train, X_test, y_test, 'Output_plots', 'model2')
 
 
 model3 = tf.keras.Sequential([
@@ -421,4 +421,4 @@ model3.compile(optimizer='adam',
 
 model3.summary()
 
-train_and_evaluate(model3, X_train, y_train, X_test, y_test, class_labels, 'Output_plots', 'model3')
+train_and_evaluate(model3, X_train, y_train, X_test, y_test, 'Output_plots', 'model3')
