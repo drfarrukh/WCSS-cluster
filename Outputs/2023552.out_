@@ -327,3 +327,32 @@ Test accuracy: 93.12%
    macro avg       0.70      0.79      0.69    489355
 weighted avg       0.93      0.93      0.93    489355
 
+[working c7da60d] new job
+ Committer: Muhammad Jamshed Abbass <abbass12@wn0224.bem2.kdm.wcss.pl>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 16 files changed, 439 insertions(+), 753 deletions(-)
+ create mode 100644 Output_plots/model1_classification_report.txt
+ rewrite Output_plots/model1_training_plots.png (99%)
+ create mode 100644 Output_plots/model2_classification_report.txt
+ create mode 100644 Output_plots/model2_training_plots.png
+ create mode 100644 Output_plots/model3_classification_report.txt
+ create mode 100644 Output_plots/model3_training_plots.png
+ delete mode 100644 Outputs/2018040.err_
+ delete mode 100644 Outputs/2018040.out_
+ delete mode 100644 Outputs/2018182.err_
+ delete mode 100644 Outputs/2018182.out_
+ delete mode 100644 Outputs/2018183.err_
+ delete mode 100644 Outputs/2018183.out_
+ create mode 100644 Outputs/2023552.err_
+ create mode 100644 Outputs/2023552.out_

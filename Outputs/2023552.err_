@@ -35,3 +35,21 @@ To enable the following instructions: AVX2 AVX512F FMA, in other operations, reb
   _warn_prf(average, modifier, msg_start, len(result))
 /home/abbass12/.local/lib/python3.11/site-packages/sklearn/metrics/_classification.py:1469: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
   _warn_prf(average, modifier, msg_start, len(result))
+Missing or invalid credentials.
+Error: connect ENOENT /run/user/4692/vscode-git-1348135cf3.sock
+    at PipeConnectWrap.afterConnect [as oncomplete] (node:net:1494:16) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'connect',
+  address: '/run/user/4692/vscode-git-1348135cf3.sock'
+}
+Missing or invalid credentials.
+Error: connect ENOENT /run/user/4692/vscode-git-1348135cf3.sock
+    at PipeConnectWrap.afterConnect [as oncomplete] (node:net:1494:16) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'connect',
+  address: '/run/user/4692/vscode-git-1348135cf3.sock'
+}
+remote: Repository not found.
+fatal: Authentication failed for 'https://github.com/drfarrukh/WCSS-cluster/'
