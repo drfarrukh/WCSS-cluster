@@ -363,7 +363,7 @@ def train_and_evaluate(model, X_train, y_train, X_test, y_test, output_folder, m
     plt.show()
 
     # Generate a classification report
-    y_pred = model.predict(X_test)
+    y_pred = model.predict(X_test, verbose=2)
     y_pred_classes = np.argmax(y_pred, axis=1)
     class_report = classification_report(y_test, y_pred_classes)
 
