@@ -191,7 +191,7 @@ print(label_mapping)
 
 
 # %%
-from imblearn.over_sampling import SMOTE
+# from imblearn.over_sampling import SMOTE
 from sklearn.model_selection import train_test_split
 
 # Split your data into features (X) and labels (y)
@@ -248,7 +248,7 @@ print(f'Shape of  y_test: {y_test.shape}')
 # # Check the new distribution of labels
 # print(y_train.value_counts())
 
-gc.collect()
+# gc.collect()
 
 # %%
 # # Your code to create a bar chart for label counts
@@ -363,19 +363,20 @@ def train_and_evaluate(model, X_train, y_train, X_test, y_test, output_folder, m
     plt.show()
 
     # Generate a classification report
-    y_pred = model.predict(X_test)
+    y_pred = model.predict(X_test, verbose=2)
     y_pred_classes = np.argmax(y_pred, axis=1)
-    class_report = classification_report(y_test, y_pred_classes, target_names=class_labels)
+    class_report = classification_report(y_test, y_pred_classes)
 
     # Print and save the classification report
     print(class_report)
-    with open(f'{output_folder}/{model_name}_classification_report_wo_SMOTE.txt', 'w') as report_file:
+    with open(f'{output_folder}/{model_name}_classification_report.txt', 'w') as report_file:
         report_file.write(class_report)
 
-
+#%%
 
 train_and_evaluate(model1, X_train, y_train, X_test, y_test, 'Output_plots', 'model1')
 
+#%%
 model2 = tf.keras.Sequential([
     tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
     tf.keras.layers.Conv1D(128, kernel_size=3, activation='relu', input_shape=(X_train.shape[1], 1)),
@@ -397,9 +398,12 @@ model2.compile(optimizer='adam',
 
 model2.summary()
 
+
+#%%
+
 train_and_evaluate(model2, X_train, y_train, X_test, y_test, 'Output_plots', 'model2')
 
-
+#%%
 model3 = tf.keras.Sequential([
     tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
     tf.keras.layers.Conv1D(128, kernel_size=3, activation='relu', input_shape=(X_train.shape[1], 1)),
@@ -420,5 +424,38 @@ model3.compile(optimizer='adam',
               metrics=['accuracy'])
 
 model3.summary()
+#%%
 
 train_and_evaluate(model3, X_train, y_train, X_test, y_test, 'Output_plots', 'model3')
+
+#%%
+
+model_2DCNN = tf.keras.Sequential([
+    tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
+    tf.keras.layers.Conv1D(64, kernel_size=3, activation='relu'),
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Conv1D(128, kernel_size=3, activation='relu'),
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Conv1D(256, kernel_size=3, activation='relu'),
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(num_classes, activation='softmax')
+])
+
+
+# Compile the model
+model_2DCNN.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+# Print a summary of the model
+model_2DCNN.summary()
+
+#%%
+
+train_and_evaluate(model_2DCNN, X_train, y_train, X_test, y_test, 'Output_plots', 'model_2DCNN')
+
+#%%
