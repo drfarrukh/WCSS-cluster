@@ -288,53 +288,18 @@ num_classes = len(Labels_in_df)
 print(num_classes)
 
 # %%
-import tensorflow as tf
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-import pandas as pd
-
-# %%
-# Build your CNN model using TensorFlow
-model1 = tf.keras.Sequential([
-    tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
-    tf.keras.layers.Conv1D(64, kernel_size=3, activation='relu', input_shape=(X_train.shape[1], 1)),
-    tf.keras.layers.BatchNormalization(),
-    tf.keras.layers.MaxPooling1D(pool_size=2),
-    tf.keras.layers.Conv1D(128, kernel_size=3, activation='relu'),
-    tf.keras.layers.BatchNormalization(),
-    tf.keras.layers.MaxPooling1D(pool_size=2),
-    tf.keras.layers.Conv1D(256, kernel_size=3, activation='relu'),
-    tf.keras.layers.BatchNormalization(),
-    tf.keras.layers.MaxPooling1D(pool_size=2),
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(num_classes, activation='softmax')
-])
-
-# Compile the model
-model1.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
-
-model1.summary()
-
-# %%
-# Train the model
-history1 = model1.fit(X_train, y_train, epochs=10, batch_size=128, validation_split=0.2, verbose=2)
-
-# # Evaluate the model
-# test_loss, test_acc = model1.evaluate(X_test, y_test, verbose=2)
-# print(f"Test accuracy: {test_acc * 100:.2f}%")
-
-# %%
 import matplotlib.pyplot as plt
 from sklearn.metrics import classification_report
 import numpy as np
 
 def train_and_evaluate(model, X_train, y_train, X_test, y_test, output_folder, model_name):
     # Train the model
-    history = model.fit(X_train, y_train, epochs=10, batch_size=128, validation_split=0.2, verbose=2)
+    history = model.fit(X_train, y_train, epochs=30, batch_size=128, validation_split=0.2, verbose=2)
+
+    # Create a DataFrame from the training history
+    history_df = pd.DataFrame(history.history)
+    # Save the DataFrame to a CSV file
+    history_df.to_csv(f'{output_folder}/{model_name}_training_history.csv', index=False)
 
     # Evaluate the model
     test_loss, test_acc = model.evaluate(X_test, y_test, verbose=2)
@@ -369,70 +334,23 @@ def train_and_evaluate(model, X_train, y_train, X_test, y_test, output_folder, m
 
     # Print and save the classification report
     print(class_report)
-    with open(f'{output_folder}/{model_name}_classification_report.txt', 'w') as report_file:
+    with open(f'{output_folder}/{model_name}_classification_report_wo_SMOTE.txt', 'w') as report_file:
         report_file.write(class_report)
 
 #%%
 
-train_and_evaluate(model1, X_train, y_train, X_test, y_test, 'Output_plots', 'model1')
 
-#%%
-model2 = tf.keras.Sequential([
+# %%
+import tensorflow as tf
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+import pandas as pd
+
+# %%
+# Build your CNN model using TensorFlow
+Simple_1DCNN = tf.keras.Sequential([
     tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
-    tf.keras.layers.Conv1D(128, kernel_size=3, activation='relu', input_shape=(X_train.shape[1], 1)),
-    tf.keras.layers.MaxPooling1D(pool_size=2),
-    tf.keras.layers.Conv1D(256, kernel_size=3, activation='relu'),
-    tf.keras.layers.MaxPooling1D(pool_size=2),
-    tf.keras.layers.Conv1D(512, kernel_size=3, activation='relu'),
-    tf.keras.layers.MaxPooling1D(pool_size=2),
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(num_classes, activation='softmax')
-])
-
-# Compile the model
-model2.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
-
-model2.summary()
-
-
-#%%
-
-train_and_evaluate(model2, X_train, y_train, X_test, y_test, 'Output_plots', 'model2')
-
-#%%
-model3 = tf.keras.Sequential([
-    tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
-    tf.keras.layers.Conv1D(128, kernel_size=3, activation='relu', input_shape=(X_train.shape[1], 1)),
-    tf.keras.layers.MaxPooling1D(pool_size=2),
-    tf.keras.layers.Conv1D(64, kernel_size=3, activation='relu'),
-    tf.keras.layers.MaxPooling1D(pool_size=2),
-    tf.keras.layers.Conv1D(32, kernel_size=3, activation='relu'),
-    tf.keras.layers.MaxPooling1D(pool_size=2),
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(64, activation='relu'),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(num_classes, activation='softmax')
-])
-
-# Compile the model
-model3.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
-
-model3.summary()
-#%%
-
-train_and_evaluate(model3, X_train, y_train, X_test, y_test, 'Output_plots', 'model3')
-
-#%%
-
-model_2DCNN = tf.keras.Sequential([
-    tf.keras.layers.Reshape(target_shape=(X_train.shape[1], 1), input_shape=(X_train.shape[1],)),
-    tf.keras.layers.Conv1D(64, kernel_size=3, activation='relu'),
+    tf.keras.layers.Conv1D(64, kernel_size=3, activation='relu', input_shape=(X_train.shape[1], 1)),
     tf.keras.layers.BatchNormalization(),
     tf.keras.layers.MaxPooling1D(pool_size=2),
     tf.keras.layers.Conv1D(128, kernel_size=3, activation='relu'),
@@ -447,15 +365,61 @@ model_2DCNN = tf.keras.Sequential([
     tf.keras.layers.Dense(num_classes, activation='softmax')
 ])
 
-
 # Compile the model
-model_2DCNN.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+Simple_1DCNN.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
 
-# Print a summary of the model
-model_2DCNN.summary()
+Simple_1DCNN.summary()
+
+train_and_evaluate(Simple_1DCNN, X_train, y_train, X_test, y_test, 'Output_plots', '1D-CNN')
 
 #%%
 
-train_and_evaluate(model_2DCNN, X_train, y_train, X_test, y_test, 'Output_plots', 'model_2DCNN')
+# Reshape the data to 2D format
+X_train = X_train.reshape(-1, 76, 1, 1)
+X_test = X_test.reshape(-1, 76, 1, 1)
+
+# Define the CNN model
+Simple_2DCNN = tf.keras.Sequential([
+    layers.Input(shape=(76, 1, 1)),
+    layers.Conv2D(32, (3, 1), activation='relu'),
+    layers.MaxPooling2D((2, 1)),
+    layers.Conv2D(64, (3, 1), activation='relu'),
+    layers.MaxPooling2D((2, 1)),
+    layers.Flatten(),
+    layers.Dense(128, activation='relu'),
+    layers.Dense(14, activation='softmax')  # 14 output classes for the labels
+])
+
+# Compile the model
+Simple_2DCNN.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+
+train_and_evaluate(Simple_2DCNN, X_train, y_train, X_test, y_test, 'Output_plots', '2D-CNN')
+
+#%%
+
+CNN_LSTM2D = tf.keras.Sequential([
+    tf.keras.layers.ConvLSTM2D(64, (3, 3), activation='relu', input_shape=(76, 1, 1), return_sequences=True),
+    tf.keras.layers.Batf.tchNormalization(),
+    tf.keras.layers.ConvLSTM2D(128, (3, 3), activation='relu', return_sequences=True),
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.ConvLSTM2D(256, (3, 3), activation='relu'),
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(num_classes, activation='softmax')
+])
+
+# Compile the model
+CNN_LSTM2D.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+CNN_LSTM2D.summary()
+#%%
+
+train_and_evaluate(CNN_LSTM2D, X_train, y_train, X_test, y_test, 'Output_plots', 'CNN-LSTM-2D')
 
 #%%
