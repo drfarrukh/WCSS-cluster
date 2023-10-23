@@ -1,0 +1,39 @@
+0
+Memory usage of dataframe is 640.00 MB
+Memory usage after optimization is: 230.25 MB
+Decreased by 64.0%
+Memory usage of dataframe is 640.00 MB
+Memory usage after optimization is: 450.27 MB
+Decreased by 29.6%
+Memory usage of dataframe is 640.00 MB
+Memory usage after optimization is: 231.26 MB
+Decreased by 63.9%
+Memory usage of dataframe is 202.10 MB
+Memory usage after optimization is: 143.57 MB
+Decreased by 29.0%
+Memory usage of dataframe is 640.00 MB
+Memory usage after optimization is: 227.27 MB
+Decreased by 64.5%
+Memory usage of dataframe is 640.00 MB
+Memory usage after optimization is: 259.26 MB
+Decreased by 59.5%
+Memory usage of dataframe is 640.00 MB
+Memory usage after optimization is: 257.25 MB
+Decreased by 59.8%
+Memory usage of dataframe is 640.00 MB
+Memory usage after optimization is: 210.15 MB
+Decreased by 67.2%
+Memory usage of dataframe is 374.21 MB
+Memory usage after optimization is: 272.91 MB
+Decreased by 27.1%
+Dataset Loaded
+dataset shape (8284254, 80)
+zero variance columns [] dropped
+shape after removing zero variance columns: (8284254, 80)
+35281 rows dropped
+shape after removing nan: (8248973, 80)
+shape after dropping duplicates: (7841683, 80)
+columns which have identical values [] dropped
+shape after removing identical value columns: (7841683, 80)
+Instances: 7841683
+Features: 80
