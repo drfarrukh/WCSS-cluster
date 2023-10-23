@@ -386,7 +386,7 @@ X_train = X_train.reshape(-1, 76, 1, 1)
 X_test = X_test.reshape(-1, 76, 1, 1)
 
 # Define the CNN model
-Simple_2DCNN = keras.Sequential([
+Simple_2DCNN = tf.keras.Sequential([
     tf.keras.layers.Input(shape=(76, 1, 1)),
     tf.keras.layers.Conv2D(32, (3, 1), activation='relu'),
     tf.keras.layers.MaxPooling2D((2, 1)),
