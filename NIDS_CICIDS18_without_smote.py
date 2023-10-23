@@ -382,14 +382,14 @@ X_test = X_test.reshape(-1, 76, 1, 1)
 
 # Define the CNN model
 Simple_2DCNN = tf.keras.Sequential([
-    layers.Input(shape=(76, 1, 1)),
-    layers.Conv2D(32, (3, 1), activation='relu'),
-    layers.MaxPooling2D((2, 1)),
-    layers.Conv2D(64, (3, 1), activation='relu'),
-    layers.MaxPooling2D((2, 1)),
-    layers.Flatten(),
-    layers.Dense(128, activation='relu'),
-    layers.Dense(14, activation='softmax')  # 14 output classes for the labels
+    tf.keras.layers.Input(shape=(76, 1, 1)),
+    tf.keras.layers.Conv2D(32, (3, 1), activation='relu'),
+    tf.keras.layers.MaxPooling2D((2, 1)),
+    tf.keras.layers.Conv2D(64, (3, 1), activation='relu'),
+    tf.keras.layers.MaxPooling2D((2, 1)),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(14, activation='softmax')  # 14 output classes for the labels
 ])
 
 # Compile the model
