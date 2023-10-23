@@ -299,7 +299,7 @@ def train_and_evaluate(model, X_train, y_train, X_test, y_test, output_folder, m
     # Create a DataFrame from the training history
     history_df = pd.DataFrame(history.history)
     # Save the DataFrame to a CSV file
-    history_df.to_csv(f'{output_folder}/{model_name}_training_history.csv', index=False)
+    history_df.to_csv(f'{output_folder}/{model_name}_training_history_wo_smote.csv', index=False)
 
     # Evaluate the model
     test_loss, test_acc = model.evaluate(X_test, y_test, verbose=2)
