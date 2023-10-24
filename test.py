@@ -30,19 +30,18 @@ labels = ["Benign", "DDOS attack-HOIC", "DoS attacks-Hulk", "Bot", "Infiltration
 label_counts = [668461, 668461, 434883, 282310, 160705, 117322, 41455, 39346, 21092, 10285, 1730, 609, 230, 87]
 
 # Create an empty DataFrame
-df = pd.DataFrame(columns=[f"Feature_{i}" for i in range(76)])
+data = pd.DataFrame(columns=[f"Feature_{i}" for i in range(76)])
 
 # Generate the data with the specified labels
 for label, count in zip(labels, label_counts):
-    label_data = pd.DataFrame(np.random.rand(count, 76), columns=data.columns)
+    label_data = pd.DataFrame(np.random.rand(count, 76))  # 75 columns to match the original DataFrame
     label_data["Label"] = label
-    df = df.append(label_data)
-
+    data = pd.concat([data, label_data], ignore_index=True)
 # Reset the index of the final dataset
-df.reset_index(drop=True, inplace=True)
+data.reset_index(drop=True, inplace=True)
 
 # Shuffle the dataset
-df = df.sample(frac=1).reset_index(drop=True)
+df = data.sample(frac=1).reset_index(drop=True)
 
 
 # %%
