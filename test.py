@@ -22,32 +22,28 @@ import matplotlib.pyplot as plt
 import gc
 
 # %%
-# Define the number of instances and features
-num_instances = 7841683
-num_features = 77
 
-# %%
+# Define the labels and their corresponding counts
+labels = ["Benign", "DDOS attack-HOIC", "DoS attacks-Hulk", "Bot", "Infiltration", "SSH-Bruteforce",
+          "DoS attacks-GoldenEye", "FTP-BruteForce", "DoS attacks-SlowHTTPTest", "DoS attacks-Slowloris",
+          "DDOS attack-LOIC-UDP", "Brute Force-Web", "Brute Force-XSS", "SQL Injection"]
+label_counts = [668461, 668461, 434883, 282310, 160705, 117322, 41455, 39346, 21092, 10285, 1730, 609, 230, 87]
 
-# Create a random dataset
-data = np.random.rand(num_instances, num_features)
+# Create an empty DataFrame
+df = pd.DataFrame(columns=[f"Feature_{i}" for i in range(76)])
 
-# Create a DataFrame from the random data
-df = pd.DataFrame(data)
-df.shape
-# %%
-# Define column names
-col_names = [f'Feature_{i}' for i in range(1, num_features + 1)]
+# Generate the data with the specified labels
+for label, count in zip(labels, label_counts):
+    label_data = pd.DataFrame(np.random.rand(count, 76), columns=data.columns)
+    label_data["Label"] = label
+    df = df.append(label_data)
 
-# Rename the specified columns
-df.columns = col_names
+# Reset the index of the final dataset
+df.reset_index(drop=True, inplace=True)
 
-# %%
-# Rename the last column to "Label"
-df.rename(columns={col_names[-1]: 'Label'}, inplace=True)
+# Shuffle the dataset
+df = df.sample(frac=1).reset_index(drop=True)
 
-# %%
-# Display the first few rows of the dataset
-print(df.head())
 
 # %%
 import gc
