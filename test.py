@@ -23,31 +23,64 @@ import gc
 
 # %%
 
-# Define the labels and their corresponding counts
-labels = ["Benign", "DDOS attack-HOIC", "DoS attacks-Hulk", "Bot", "Infiltration", "SSH-Bruteforce",
-          "DoS attacks-GoldenEye", "FTP-BruteForce", "DoS attacks-SlowHTTPTest", "DoS attacks-Slowloris",
-          "DDOS attack-LOIC-UDP", "Brute Force-Web", "Brute Force-XSS", "SQL Injection"]
-label_counts = [668461, 668461, 434883, 282310, 160705, 117322, 41455, 39346, 21092, 10285, 1730, 609, 230, 87]
+# Define the labels
+labels = [
+    "Benign", "DDOS attack-HOIC", "DoS attacks-Hulk", "Bot", "Infiltration",
+    "SSH-Bruteforce", "DoS attacks-GoldenEye", "FTP-BruteForce",
+    "DoS attacks-SlowHTTPTest", "DoS attacks-Slowloris", "DDOS attack-LOIC-UDP",
+    "Brute Force -Web", "Brute Force -XSS", "SQL Injection"
+]
 
-# Create an empty DataFrame
-data = pd.DataFrame(columns=[f"Feature_{i}" for i in range(76)])
+# Number of instances
+num_instances = 7841683
 
-# Generate the data with the specified labels
-for label, count in zip(labels, label_counts):
-    label_data = pd.DataFrame(np.random.rand(count, 76))  # 75 columns to match the original DataFrame
-    label_data["Label"] = label
-    data = pd.concat([data, label_data], ignore_index=True)
-# Reset the index of the final dataset
-data.reset_index(drop=True, inplace=True)
+# Number of features
+num_features = 76
 
-# Shuffle the dataset
-df = data.sample(frac=1).reset_index(drop=True)
+# Create random data
+data = np.random.rand(num_instances, num_features)
 
+# %%
 
+# Create a DataFrame
+df = pd.DataFrame(data, columns=[f"Feature_{i+1}" for i in range(num_features)])
+
+# Add the "Label" column with random labels
+df['Label'] = np.random.choice(labels, num_instances)
+
+print("df done")
+# %%
+
+df.shape
 # %%
 import gc
 gc.collect()
 # %%
+# %%
+label_encoder = LabelEncoder()
+df['Label'] = label_encoder.fit_transform(df['Label'].values.ravel())
+df['Label'].unique()
+
+unique_labels = df['Label'].unique()
+original_labels = label_encoder.inverse_transform(unique_labels)
+
+label_mapping = dict(zip(unique_labels, original_labels))
+print(label_mapping)
+
+# %%
+
+Labels_in_df = df['Label'].unique()
+
+
+# %%
+# from imblearn.over_sampling import SMOTE
+from sklearn.model_selection import train_test_split
+
+# Split your data into features (X) and labels (y)
+X = df.drop('Label', axis=1)  # Assuming you have features in your DataFrame
+y = df['Label']
+
+
 # %%
 scaler = MinMaxScaler()
 X = scaler.fit_transform(X)
@@ -63,31 +96,6 @@ print(f'Shape of y_train: {y_train.shape}')
 print(f'Shape of  X_test: {X_test.shape}')
 print(f'Shape of  y_test: {y_test.shape}')
 
-
-# %%
-# Apply SMOTE to balance the training set
-smote = SMOTE(sampling_strategy='auto', random_state=42)
-X_train, y_train = smote.fit_resample(X_train, y_train)
-
-# Check the new distribution of labels
-print(y_train.value_counts())
-
-gc.collect()
-
-# %%
-# # Your code to create a bar chart for label counts
-# label_counts = df['Label'].value_counts()
-# plt.figure(figsize=(10, 6))
-# plt.barh(label_counts.index, label_counts.values, color='skyblue')
-
-# # Adding labels and a title
-# plt.xlabel('Count')
-# plt.ylabel('Label')
-# plt.title('Distribution of Labels after Downsampling of "Benign" Class')
-
-# # Display the plot
-# plt.tight_layout()
-# plt.show()
 
 # %%
 print(f'Type of X_train: {type(X_train)}')
@@ -106,10 +114,6 @@ if not isinstance(y_test, np.ndarray):
     y_test = y_test.to_numpy()
 
 print(f'Type of y_train: {type(y_test)}')
-
-# %%
-num_classes = len(Labels_in_df)
-print(num_classes)
 
 
 # %%
