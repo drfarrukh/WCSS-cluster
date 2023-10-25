@@ -342,7 +342,7 @@ def train_and_evaluate(model, X_train, y_train, X_test, y_test, output_folder, m
 
     # Create a heatmap using Seaborn
     plt.figure(figsize=(8, 6))
-    sns.heatmap(confusion, annot=True, fmt='d', cmap='Blues', xticklabels=Labels_in_df, yticklabels=class_labels)
+    sns.heatmap(confusion, annot=True, fmt='.2f', cmap='Blues', xticklabels=Labels_in_df, yticklabels=class_labels)
     plt.xlabel("Predicted")
     plt.ylabel("True")
     plt.title("Confusion Matrix")

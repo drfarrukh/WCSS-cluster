@@ -15,4 +15,3 @@ apptainer exec --nv tensorflow_latest-gpu.sif pip3 install -q kaggle --user
 apptainer exec --nv tensorflow_latest-gpu.sif pip3 install -q matplotlib seaborn scikit-learn imbalanced-learn --user
 
 apptainer exec --nv tensorflow_latest-gpu.sif python3 ./NIDS_CICIDS18_without_smote.py
-apptainer exec --nv tensorflow_latest-gpu.sif python3 ./NIDS_CICIDS18.py
