@@ -19,10 +19,12 @@ from sklearn.metrics import precision_recall_curve, auc, roc_curve, recall_score
 #tensorflow
 from tensorflow.keras.utils import to_categorical
 import tensorflow as tf
+from tensorflow.keras.callbacks import EarlyStopping
 
 #graph
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
 
 
 import gc
@@ -293,8 +295,11 @@ from sklearn.metrics import classification_report
 import numpy as np
 
 def train_and_evaluate(model, X_train, y_train, X_test, y_test, output_folder, model_name):
-    # Train the model
-    history = model.fit(X_train, y_train, epochs=30, batch_size=64, validation_split=0.2, verbose=2)
+    # Define early stopping
+    early_stopping = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True)
+    
+    # Train the model with early stopping
+    history = model.fit(X_train, y_train, epochs=100, batch_size=64, validation_split=0.2, callbacks=[early_stopping], verbose=2)
 
     # Create a DataFrame from the training history
     history_df = pd.DataFrame(history.history)
@@ -331,6 +336,21 @@ def train_and_evaluate(model, X_train, y_train, X_test, y_test, output_folder, m
     y_pred = model.predict(X_test, verbose=2)
     y_pred_classes = np.argmax(y_pred, axis=1)
     class_report = classification_report(y_test, y_pred_classes)
+
+    confusion = confusion_matrix(y_test, y_pred_classes)
+    
+
+    # Create a heatmap using Seaborn
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(confusion, annot=True, fmt='d', cmap='Blues', xticklabels=Labels_in_df, yticklabels=class_labels)
+    plt.xlabel("Predicted")
+    plt.ylabel("True")
+    plt.title("Confusion Matrix")
+
+    # Save the figure as a PNG file
+    plt.savefig(f'{output_folder}/{model_name}_confusion_matrix_wo_SMOTE.png')
+    # Show the plot
+    plt.show()
 
     # Print and save the classification report
     print(class_report)
