@@ -299,7 +299,7 @@ import numpy as np
 
 def train_and_evaluate(model, X_train, y_train, X_test, y_test, output_folder, model_name):
     # Train the model
-    history = model.fit(X_train, y_train, epochs=30, batch_size=128, validation_split=0.2, verbose=2)
+    history = model.fit(X_train, y_train, epochs=30, batch_size=64, validation_split=0.2, verbose=2)
     
     # Create a DataFrame from the training history
     history_df = pd.DataFrame(history.history)
@@ -405,26 +405,26 @@ train_and_evaluate(Simple_2DCNN, X_train, y_train, X_test, y_test, 'Output_plots
 
 #%%
 
-CNN_LSTM2D = tf.keras.Sequential([
-    tf.keras.layers.ConvLSTM2D(64, (3, 3), activation='relu', input_shape=(76, 1, 1), return_sequences=True),
-    tf.keras.layers.BatchNormalization(),
-    tf.keras.layers.ConvLSTM2D(128, (3, 3), activation='relu', return_sequences=True),
-    tf.keras.layers.BatchNormalization(),
-    tf.keras.layers.ConvLSTM2D(256, (3, 3), activation='relu'),
-    tf.keras.layers.BatchNormalization(),
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(num_classes, activation='softmax')
-])
+# CNN_LSTM2D = tf.keras.Sequential([
+#     tf.keras.layers.ConvLSTM2D(64, (3, 3), activation='relu', input_shape=(76, 1, 1), return_sequences=True),
+#     tf.keras.layers.BatchNormalization(),
+#     tf.keras.layers.ConvLSTM2D(128, (3, 3), activation='relu', return_sequences=True),
+#     tf.keras.layers.BatchNormalization(),
+#     tf.keras.layers.ConvLSTM2D(256, (3, 3), activation='relu'),
+#     tf.keras.layers.BatchNormalization(),
+#     tf.keras.layers.Flatten(),
+#     tf.keras.layers.Dense(128, activation='relu'),
+#     tf.keras.layers.Dense(num_classes, activation='softmax')
+# ])
 
-# Compile the model
-CNN_LSTM2D.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
+# # Compile the model
+# CNN_LSTM2D.compile(optimizer='adam',
+#               loss='sparse_categorical_crossentropy',
+#               metrics=['accuracy'])
 
-CNN_LSTM2D.summary()
-#%%
+# CNN_LSTM2D.summary()
+# #%%
 
-train_and_evaluate(CNN_LSTM2D, X_train, y_train, X_test, y_test, 'Output_plots', 'CNN-LSTM-2D')
+# train_and_evaluate(CNN_LSTM2D, X_train, y_train, X_test, y_test, 'Output_plots', 'CNN-LSTM-2D')
 
 #%%
