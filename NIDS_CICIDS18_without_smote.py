@@ -34,6 +34,7 @@ import gc
 
 gpus = tf.config.list_physical_devices('GPU')
 print(len(gpus))
+# %%
 
 for gpu in gpus:
     device = tf.config.PhysicalDevice(name=gpu.name, device_type='GPU')
@@ -299,7 +300,7 @@ def train_and_evaluate(model, X_train, y_train, X_test, y_test, output_folder, m
     early_stopping = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True)
     
     # Train the model with early stopping
-    history = model.fit(X_train, y_train, epochs=100, batch_size=64, validation_split=0.2, callbacks=[early_stopping], verbose=2)
+    history = model.fit(X_train, y_train, epochs=20, batch_size=64, validation_split=0.2, callbacks=[early_stopping], verbose=2)
 
     # Create a DataFrame from the training history
     history_df = pd.DataFrame(history.history)
@@ -358,6 +359,97 @@ def train_and_evaluate(model, X_train, y_train, X_test, y_test, output_folder, m
         report_file.write(class_report)
 
 #%%
+
+import torch
+
+# Check if CUDA is available
+if torch.cuda.is_available():
+    # Get the number of available GPUs
+    num_gpus = torch.cuda.device_count()
+    print(f"CUDA is available with {num_gpus} GPU(s) in your system.")
+
+    # Display information about each GPU
+    for gpu_id in range(num_gpus):
+        gpu_name = torch.cuda.get_device_name(gpu_id)
+        print(f"GPU {gpu_id}: {gpu_name}")
+
+        # Additional GPU properties
+        gpu_properties = torch.cuda.get_device_properties(gpu_id)
+        print(f"GPU {gpu_id} Properties:")
+        print(f"  - Compute Capability: {gpu_properties.major}.{gpu_properties.minor}")
+        print(f"  - Total Memory: {gpu_properties.total_memory / (1024**2):.2f} MB")
+else:
+    print("CUDA is not available. You might want to install compatible GPU drivers or use CPU for computations.")
+
+#%%
+
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+# Define your 1D CNN model using PyTorch
+class Simple1DCNN(nn.Module):
+    def __init__(self, num_classes):
+        super(Simple1DCNN, self).__init__()  # Fix the super() call
+        self.conv1 = nn.Conv1d(1, 64, kernel_size=3)
+        self.batchnorm1 = nn.BatchNorm1d(64)
+        self.pool1 = nn.MaxPool1d(kernel_size=2)
+        self.conv2 = nn.Conv1d(64, 128, kernel_size=3)
+        self.batchnorm2 = nn.BatchNorm1d(128)
+        self.pool2 = nn.MaxPool1d(kernel_size=2)
+        self.conv3 = nn.Conv1d(128, 256, kernel_size=3)
+        self.batchnorm3 = nn.BatchNorm1d(256)
+        self.pool3 = nn.MaxPool1d(kernel_size=2)
+        self.fc1 = nn.Linear(256, 128)
+        self.fc2 = nn.Linear(128, 128)
+        self.fc3 = nn.Linear(128, num_classes)
+        
+    def forward(self, x):
+        x = x.unsqueeze(1)  # Add a channel dimension
+        x = self.pool1(self.batchnorm1(torch.relu(self.conv1(x))))
+        x = self.pool2(self.batchnorm2(torch.relu(self.conv2(x))))
+        x = self.pool3(self.batchnorm3(torch.relu(self.conv3(x))))
+        x = x.view(x.size(0), -1)
+        x = torch.relu(self.fc1(x))
+        x = torch.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x
+
+# Create an instance of the model
+model = Simple1DCNN(num_classes)
+
+# Define the loss and optimizer
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+# Print model summary
+print(model)
+
+#%%
+
+# Define a function for training and evaluation
+def train_and_evaluate(model, train_loader, test_loader, num_epochs=10):
+    for epoch in range(num_epochs):
+        model.train()
+        for inputs, labels in train_loader:
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
+
+        model.eval()
+        correct = 0
+        total = 0
+        with torch.no_grad():
+            for inputs, labels in test_loader:
+                outputs = model(inputs)
+                _, predicted = torch.max(outputs, 1)
+                total += labels.size(0)
+                correct += (predicted == labels).sum().item()
+
+        accuracy = 100 * correct / total
+        print(f'Epoch {epoch + 1}/{num_epochs}, Loss: {loss.item():.4f}, Accuracy: {accuracy:.2f}%')
 
 
 # %%
