@@ -1,4 +1,4 @@
-- 👋 Hi, I’m Farrukh Qureshi (@drfarrukh).
+- 👋 Hi, I’m Farrukh Qureshi.
 - 👀 I’m interested in Deep Learning and Computer Vision.
 - 🌱 I’m currently learning Convolutional Neural Networks in the area of Biomedical Engineering applications.
 - 💞️ I’m looking to collaborate on AI, Deep learning, Machine learning, Computer Vision, etc.
